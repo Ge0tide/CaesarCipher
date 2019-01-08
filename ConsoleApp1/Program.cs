@@ -7,111 +7,48 @@ namespace CaesarCipher
 {
     static class CaesarCipher
     {
-        private static List<char> letterList = new List<char> { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-        public static string Name { get { return "Caesar Cipher"; } }
-
-        public static string Code(string text, int key) // Method used to code
+        public static string Encode(string input, int shift)
         {
-            int index, newIndex;
-            string result = string.Empty;
-            text = text.Trim();
-            
-            foreach(char letter in text)
+            string output = "";
+            int len = input.Length;
+
+            for (int i = 0; i < len; i++)
             {
-                if(letterList.Contains(char.ToUpper(letter)))
-                {
-                    bool isUpper = char.IsUpper(letter);
+                int afterShift = input[i] + shift;
 
-                    index = letterList.IndexOf(letterList.First(x => x == char.ToUpper(letter)));
-                    newIndex = index + key;
-                    if(newIndex > 25)
-                    {
-                        newIndex -= 25;
-                    }
-                    else if (newIndex < 0)
-                    {
-                        newIndex += 25;
-                    }
-                    result += isUpper == true ? letterList[newIndex] : char.ToLower(letterList[newIndex]);
-                }
-                else if(char.IsWhiteSpace(letter))
-                {
-                    result += letter;
-                }
+                output += (char)afterShift;
             }
-            return result;
+
+            return output;
         }
-        public static string Decode(string text, int key)
+        public static string Decode(string input, int shift)
         {
-            string result = string.Empty;
-            result = Code(text, -key);
-            return result;
+            string output = "";
+            int len = input.Length;
+
+            for (int i = 0; i < len; i++)
+            {
+                int afterShift = input[i] - shift;
+
+                output += (char)afterShift;
+            }
+
+            return output;
         }
     }
     class Program
     {
         static void Main(string[] args)
         {
-            string input = "";
-            int shiftVal = 15;
-            
-            while(true)
-            {
-                Console.Write("Input shift value: ");
-                try
-                { 
-                    shiftVal = int.Parse(Console.ReadLine());
-                    if(shiftVal > 24)
-                    {
-                        throw new Exception();
-                    }
-                    else if(shiftVal < 0)
-                    {
-                        throw new Exception();
-                    }
-                    Console.Clear();
-                }
-                catch
-                {
-                    continue;
-                }
-                Console.Write($"[Shift = {shiftVal}]\n1. Code\n2. Decode\n3. Exit\n\nChoice: ");
-                input = Console.ReadLine();
-                Console.Clear();
-                try
-                {
-                    int x;
-                    int.TryParse(input, out x);
+            string input = "SampleInput";
+            int shift = 12;
 
-                    if(x == 1)
-                    {
-                        Console.Write("Input: ");
-                        input = Console.ReadLine();
+            string encode = CaesarCipher.Encode(input, shift);
+            string decode = CaesarCipher.Decode(encode, shift);
 
-                        Console.WriteLine($"\nOutput: {CaesarCipher.Code(input, shiftVal)}\n\n");
-                    }
-                    else if (x == 2)
-                    {
-                        Console.Write("Input: ");
-                        input = Console.ReadLine();
-                        
-                        Console.WriteLine($"\nOutput: {CaesarCipher.Decode(input, shiftVal)}\n\n");
-                    }
-                    else if(x == 3)
-                    {
-                        Environment.Exit(Environment.ExitCode);
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                }
-                catch
-                {
-                    Console.WriteLine("Error 1 - Please input a valid constrained number!\n\n");
-                    continue;
-                } 
-            }
+            Console.WriteLine($"Input: {input}");
+            Console.WriteLine($"Encoded Input: {encode}");
+            Console.WriteLine($"Decoded Input: {decode}");
         }
     }
 }
